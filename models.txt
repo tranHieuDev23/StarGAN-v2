@@ -1,0 +1,476 @@
+StarGANv2(
+  (generator): Generator(
+    (from_rgb): Conv2d(3, 32, kernel_size=(1, 1), stride=(1, 1))
+    (encode): ModuleList(
+      (0): AdaInResBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (conv1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (norm1): AdaIN(
+          (fc): Linear(in_features=64, out_features=1024, bias=True)
+          (norm): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (norm2): AdaIN(
+          (fc): Linear(in_features=64, out_features=1024, bias=True)
+          (norm): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+      )
+      (1): AdaInResBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (conv1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (norm1): AdaIN(
+          (fc): Linear(in_features=64, out_features=1024, bias=True)
+          (norm): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (norm2): AdaIN(
+          (fc): Linear(in_features=64, out_features=1024, bias=True)
+          (norm): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+      )
+      (2): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): InstanceNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (1): LeakyReLU(negative_slope=0.2)
+          (2): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (3): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (4): InstanceNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (5): LeakyReLU(negative_slope=0.2)
+          (6): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(32, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (3): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (1): LeakyReLU(negative_slope=0.2)
+          (2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (3): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (4): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (5): LeakyReLU(negative_slope=0.2)
+          (6): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (4): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (1): LeakyReLU(negative_slope=0.2)
+          (2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (3): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (4): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (5): LeakyReLU(negative_slope=0.2)
+          (6): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (5): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (1): LeakyReLU(negative_slope=0.2)
+          (2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (3): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (4): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (5): LeakyReLU(negative_slope=0.2)
+          (6): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (6): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (1): LeakyReLU(negative_slope=0.2)
+          (2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (3): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (4): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (5): LeakyReLU(negative_slope=0.2)
+          (6): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (7): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (1): LeakyReLU(negative_slope=0.2)
+          (2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (3): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (4): LeakyReLU(negative_slope=0.2)
+          (5): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential()
+      )
+      (8): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (1): LeakyReLU(negative_slope=0.2)
+          (2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (3): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+          (4): LeakyReLU(negative_slope=0.2)
+          (5): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential()
+      )
+    )
+    (decode): ModuleList(
+      (0): AdaInResBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (conv1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (conv2): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (norm1): AdaIN(
+          (fc): Linear(in_features=64, out_features=1024, bias=True)
+          (norm): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (norm2): AdaIN(
+          (fc): Linear(in_features=64, out_features=1024, bias=True)
+          (norm): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+      )
+      (1): AdaInResBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (conv1): Conv2d(512, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (norm1): AdaIN(
+          (fc): Linear(in_features=64, out_features=1024, bias=True)
+          (norm): InstanceNorm2d(512, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (norm2): AdaIN(
+          (fc): Linear(in_features=64, out_features=512, bias=True)
+          (norm): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (conv1x1): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      )
+      (2): AdaInResBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (conv1): Conv2d(256, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (norm1): AdaIN(
+          (fc): Linear(in_features=64, out_features=512, bias=True)
+          (norm): InstanceNorm2d(256, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (norm2): AdaIN(
+          (fc): Linear(in_features=64, out_features=256, bias=True)
+          (norm): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (conv1x1): Conv2d(256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      )
+      (3): AdaInResBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (conv1): Conv2d(128, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (norm1): AdaIN(
+          (fc): Linear(in_features=64, out_features=256, bias=True)
+          (norm): InstanceNorm2d(128, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (norm2): AdaIN(
+          (fc): Linear(in_features=64, out_features=128, bias=True)
+          (norm): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (conv1x1): Conv2d(128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      )
+      (4): AdaInResBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (conv1): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (conv2): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (norm1): AdaIN(
+          (fc): Linear(in_features=64, out_features=128, bias=True)
+          (norm): InstanceNorm2d(64, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (norm2): AdaIN(
+          (fc): Linear(in_features=64, out_features=64, bias=True)
+          (norm): InstanceNorm2d(32, eps=1e-05, momentum=0.1, affine=False, track_running_stats=False)
+        )
+        (conv1x1): Conv2d(64, 32, kernel_size=(1, 1), stride=(1, 1), bias=False)
+      )
+    )
+    (to_rgb): Sequential(
+      (0): InstanceNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=False)
+      (1): LeakyReLU(negative_slope=0.2)
+      (2): Conv2d(32, 3, kernel_size=(1, 1), stride=(1, 1))
+    )
+  )
+  (mapping_network): MappingNetwork(
+    (shared): Sequential(
+      (0): Linear(in_features=16, out_features=512, bias=True)
+      (1): ReLU()
+      (2): Linear(in_features=512, out_features=512, bias=True)
+      (3): ReLU()
+      (4): Linear(in_features=512, out_features=512, bias=True)
+      (5): ReLU()
+      (6): Linear(in_features=512, out_features=512, bias=True)
+      (7): ReLU()
+    )
+    (unshared): ModuleList(
+      (0): Sequential(
+        (0): Linear(in_features=512, out_features=512, bias=True)
+        (1): ReLU()
+        (2): Linear(in_features=512, out_features=512, bias=True)
+        (3): ReLU()
+        (4): Linear(in_features=512, out_features=512, bias=True)
+        (5): ReLU()
+        (6): Linear(in_features=512, out_features=64, bias=True)
+      )
+      (1): Sequential(
+        (0): Linear(in_features=512, out_features=512, bias=True)
+        (1): ReLU()
+        (2): Linear(in_features=512, out_features=512, bias=True)
+        (3): ReLU()
+        (4): Linear(in_features=512, out_features=512, bias=True)
+        (5): ReLU()
+        (6): Linear(in_features=512, out_features=64, bias=True)
+      )
+      (2): Sequential(
+        (0): Linear(in_features=512, out_features=512, bias=True)
+        (1): ReLU()
+        (2): Linear(in_features=512, out_features=512, bias=True)
+        (3): ReLU()
+        (4): Linear(in_features=512, out_features=512, bias=True)
+        (5): ReLU()
+        (6): Linear(in_features=512, out_features=64, bias=True)
+      )
+      (3): Sequential(
+        (0): Linear(in_features=512, out_features=512, bias=True)
+        (1): ReLU()
+        (2): Linear(in_features=512, out_features=512, bias=True)
+        (3): ReLU()
+        (4): Linear(in_features=512, out_features=512, bias=True)
+        (5): ReLU()
+        (6): Linear(in_features=512, out_features=64, bias=True)
+      )
+    )
+  )
+  (style_encoder): StyleEncoder(
+    (shared): Sequential(
+      (0): Conv2d(3, 32, kernel_size=(1, 1), stride=(1, 1))
+      (1): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(32, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (2): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (3): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (4): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (5): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (6): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (7): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (8): LeakyReLU(negative_slope=0.2)
+      (9): Conv2d(512, 512, kernel_size=(4, 4), stride=(1, 1))
+      (10): LeakyReLU(negative_slope=0.2)
+    )
+    (unshared): ModuleList(
+      (0): Linear(in_features=512, out_features=64, bias=True)
+      (1): Linear(in_features=512, out_features=64, bias=True)
+      (2): Linear(in_features=512, out_features=64, bias=True)
+      (3): Linear(in_features=512, out_features=64, bias=True)
+    )
+  )
+  (discriminator): Discriminator(
+    (main): Sequential(
+      (0): Conv2d(3, 32, kernel_size=(1, 1), stride=(1, 1))
+      (1): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(32, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(32, 64, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (2): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(64, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (3): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(128, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (4): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(256, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): Conv2d(256, 512, kernel_size=(1, 1), stride=(1, 1), bias=False)
+          (1): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (5): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (6): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (7): ResidualBlock(
+        (activation): LeakyReLU(negative_slope=0.2)
+        (_main_path): Sequential(
+          (0): LeakyReLU(negative_slope=0.2)
+          (1): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          (2): AvgPool2d(kernel_size=2, stride=2, padding=0)
+          (3): LeakyReLU(negative_slope=0.2)
+          (4): Conv2d(512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        )
+        (_shortcut): Sequential(
+          (0): AvgPool2d(kernel_size=2, stride=2, padding=0)
+        )
+      )
+      (8): LeakyReLU(negative_slope=0.2)
+      (9): Conv2d(512, 512, kernel_size=(4, 4), stride=(1, 1))
+      (10): LeakyReLU(negative_slope=0.2)
+      (11): Conv2d(512, 4, kernel_size=(1, 1), stride=(1, 1))
+      (12): Softmax2d()
+    )
+  )
+)

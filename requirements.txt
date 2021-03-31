@@ -1,0 +1,5 @@
+munch
+click
+torch
+torchvision
+torchaudio
