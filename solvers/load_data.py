@@ -61,11 +61,9 @@ class ReferenceDataset(data.Dataset):
 def get_source_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
     print("Preparing DataLoader to fetch source images...")
     data_transform = transforms.Compose([
-        transforms.RandomRotation(45),
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
-        transforms.RandomVerticalFlip(),
         transforms.ToTensor()
     ])
     dataset = datasets.ImageFolder(root_dir, transform=data_transform)
@@ -77,11 +75,9 @@ def get_source_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
 def get_reference_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
     print("Preparing DataLoader to fetch referral images...")
     data_transform = transforms.Compose([
-        transforms.RandomRotation(45),
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
-        transforms.RandomVerticalFlip(),
         transforms.ToTensor()
     ])
     dataset = ReferenceDataset(root_dir, transform=data_transform)

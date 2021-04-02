@@ -1,4 +1,5 @@
 import os
+from solvers.utils import he_init
 import torch
 import torch.nn as nn
 from torch import Tensor
@@ -26,6 +27,10 @@ class StarGANv2(nn.Module):
         self.device = torch.device(
             "cuda" if torch.cuda.is_available() else "cpu")
         self.to(self.device)
+        self.generator.apply(he_init)
+        self.mapping_network.apply(he_init)
+        self.style_encoder.apply(he_init)
+        self.discriminator.apply(he_init)
         self.checkpoint_handler = CheckpointHandler(
             os.path.join(args.checkpoint_dir, "nets_{:06d}.ckpt"),
             Munch(
@@ -56,7 +61,7 @@ class StarGANv2(nn.Module):
     @torch.no_grad()
     def generate_domain_average_style(self, y_target: Tensor) -> Tensor:
         z_many = torch.randn(10000, self.args.latent_dim).to(self.device)
-        y_many = torch.full(10000, fill_value=y_target).to(self.device)
+        y_many = torch.LongTensor(10000).to(self.device).fill_(y_target[0])
         s_many = self.generate_latent_style(z_many, y_many)
         s_avg = torch.mean(s_many, dim=0, keepdim=True)
         return s_avg

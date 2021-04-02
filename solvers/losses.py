@@ -106,7 +106,7 @@ def compute_generator_loss(args: StarGanArgs, x_real: Tensor, y_org: Tensor,
         args.lambda_ds * (1 - args.resume_iter / args.ds_iter), 0)
 
     loss = loss_adversarial + args.lambda_sty * loss_style_reconstruction \
-        + actual_lambda_ds * loss_diversity_sensitive \
+        - actual_lambda_ds * loss_diversity_sensitive \
         + args.lambda_cyc * loss_cycle_consistency
 
     return loss, Munch(adversarial=loss_adversarial.item(),

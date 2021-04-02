@@ -43,4 +43,4 @@ def train_starganv2(gan_learner: StarGANv2Learner):
 
         if ((iter + 1) % args.sample_every == 0):
             print("Sampling...")
-            sample_starganv2(gan_learner)
+            sample_starganv2(gan_learner, iter, src_fetcher)
