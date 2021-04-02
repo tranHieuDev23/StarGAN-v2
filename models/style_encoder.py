@@ -31,7 +31,6 @@ class StyleEncoder(nn.Module):
         h = h.view(h.size(0), -1)
         output = []
         for layer in self.unshared:
-            print(h.shape, layer)
             output.append(layer(h))
         output = torch.stack(output, dim=1)
         idx = torch.LongTensor(range(y.size(0))).to(y.device)
