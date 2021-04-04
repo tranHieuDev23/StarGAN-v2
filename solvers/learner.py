@@ -96,13 +96,12 @@ class StarGANv2Learner(StarGANv2):
         g_loss.backward()
         self.generator_optimizer.step()
 
-        args.lambda_ds = max(
-            args.lambda_ds * (1 - args.resume_iter / args.ds_iter), 0)
+        actual_lambda_ds = max(args.lambda_ds * (1 - args.resume_iter / args.ds_iter), 0)
 
         all_losses = dict()
         for loss, prefix in zip([d_loss_latent, d_loss_refer, g_loss_latent, g_loss_refer],
                                 ["D/latent_", "D/ref_", "G/latent_", "G/ref_"]):
             for key, value in loss.items():
                 all_losses[prefix + key] = value
-        all_losses["G/lambda_ds"] = args.lambda_ds
+        all_losses["G/lambda_ds"] = actual_lambda_ds
         return all_losses

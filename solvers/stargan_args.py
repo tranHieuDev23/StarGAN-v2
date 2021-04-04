@@ -1,8 +1,8 @@
 class StarGanArgs:
-    default_img_size = 512
+    default_img_size = 256
     default_style_dim = 64
     default_latent_dim = 16
-    default_num_domains = 4
+    default_num_domains = 3
 
     default_w_hpf = 0
     default_lambda_sty = 1
@@ -14,7 +14,7 @@ class StarGanArgs:
     default_f_lr = 1e-6
     default_beta1 = 0
     default_beta2 = 0.99
-    default_weight_decay = 1e6
+    default_weight_decay = 1e-4
 
     default_dataset_dir = "dataset"
     default_resume_iter = 0

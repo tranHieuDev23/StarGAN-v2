@@ -22,8 +22,8 @@ def train_starganv2(gan_learner: StarGANv2Learner):
     start_time = last_print_time = time.time()
     for iter in range(args.resume_iter, args.total_iters):
         print("Iteration {}".format(iter + 1))
-        args.resume_iter = iter
         losses = gan_learner.train_step(src_fetcher, ref_fetcher)
+        args.resume_iter = iter
 
         if ((iter + 1) % args.save_every == 0):
             print("Saving checkpoint...")

@@ -96,6 +96,7 @@ def compute_generator_loss(args: StarGanArgs, x_real: Tensor, y_org: Tensor,
     loss_style_reconstruction = compute_style_reconstruction_loss(
         x_fakes[0], y_target, s_targets[0], style_encoder)
 
+    x_fakes[1] = x_fakes[1].detach()
     loss_diversity_sensitive = compute_diversity_sensitive_loss(
         x_fakes[0], x_fakes[1])
 
