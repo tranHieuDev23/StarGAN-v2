@@ -16,7 +16,7 @@ def train_starganv2(gan_learner: StarGANv2Learner):
 
     if (args.resume_iter > 0):
         print("Loading checkpoints at iteration {}...".format(args.resume_iter))
-        gan_learner.load(args.resume_iter)
+        gan_learner.load(args.resume_iter + 1)
 
     print("Start training from iteration {}!".format(args.resume_iter))
     start_time = last_print_time = time.time()
