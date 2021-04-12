@@ -2,7 +2,7 @@ class StarGanArgs:
     default_img_size = 256
     default_style_dim = 64
     default_latent_dim = 16
-    default_num_domains = 3
+    default_num_domains = 4
 
     default_w_hpf = 0
     default_lambda_sty = 1
@@ -22,7 +22,7 @@ class StarGanArgs:
     default_total_iters = 100000
     default_print_every = 100
     default_sample_every = 100
-    default_save_every = 100
+    default_save_every = 2000
     default_eval_every = 1000
     default_batch_size = 8
     default_num_workers = 4

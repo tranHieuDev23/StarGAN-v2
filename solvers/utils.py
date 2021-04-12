@@ -19,5 +19,4 @@ def denormalize(x: Tensor):
 
 
 def save_image(x, ncol: int, filename: str):
-    x = denormalize(x)
     vutils.save_image(x.cpu(), filename, nrow=ncol, padding=0)
