@@ -18,7 +18,7 @@ def _tensor_to_rgb_(x: Tensor):
     N, C, H, W = x.shape
     x = x.permute(0, 2, 3, 1)
     xs = [x[i].cpu().numpy() for i in range(N)]
-    xs = [Image.fromarray(item, mode="LAB") for item in xs]
+    xs = [Image.fromarray(item.astype("uint8"), mode="LAB") for item in xs]
     xs = [lab_to_rgb(item) for item in xs]
     xs = [transforms.ToTensor()(item) for item in xs]
     x = torch.stack(xs, dim=0)
@@ -56,9 +56,6 @@ def _sample_latent_synthensis_(gan: StarGANv2, x_real: Tensor, y_target: Tensor,
 def sample_starganv2(gan: StarGANv2, step: int, source_fetcher: InputFetcher):
     args = gan.args
     x_real, y_real = next(source_fetcher)
-
-    x_1 = x_real[0].permute(1, 2, 0).numpy()
-    Image.fromarray(x_1, mode="LAB").save("sample.tiff")
 
     x_real, y_real = x_real.to(gan.device), y_real.to(gan.device)
     x_refer, y_refer = next(source_fetcher)
