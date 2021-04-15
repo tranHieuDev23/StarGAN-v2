@@ -8,10 +8,10 @@ from solvers.learner import StarGANv2Learner
 def train_starganv2(gan_learner: StarGANv2Learner):
     args = gan_learner.args
     src_fetcher = InputFetcher(get_source_loader(
-        args.dataset_dir, img_size=args.img_size
+        args.dataset_dir, img_size=args.img_size, batch_size=args.batch_size, num_workers=args.num_workers
     )[0])
     ref_fetcher = InputFetcher(get_reference_loader(
-        args.dataset_dir, img_size=args.img_size
+        args.dataset_dir, img_size=args.img_size, batch_size=args.batch_size, num_workers=args.num_workers
     )[0])
 
     if (args.resume_iter > 0):

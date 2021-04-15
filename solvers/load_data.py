@@ -1,8 +1,12 @@
 import os
 from random import sample
+from solvers.rgb_to_lab import rgb_to_lab
+import torch
 import torch.utils.data as data
+import torch.functional as F
 from torchvision import transforms, datasets
 from PIL import Image
+import numpy as np
 
 
 class DefaultDataset(data.Dataset):
@@ -58,13 +62,24 @@ class ReferenceDataset(data.Dataset):
         return len(self.samples)
 
 
+class ToTensor(object):
+    def __call__(self, image):
+        target = torch.ByteTensor(
+            torch.ByteStorage.from_buffer(image.tobytes()))
+        target = target.view(image.size[1], image.size[0], 3)
+        # put it from HWC to CHW format
+        target = target.to(torch.float).permute((2, 0, 1)).contiguous()
+        return target
+
+
 def get_source_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
     print("Preparing DataLoader to fetch source images...")
     data_transform = transforms.Compose([
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
-        transforms.ToTensor()
+        transforms.Lambda(rgb_to_lab),
+        ToTensor()
     ])
     dataset = datasets.ImageFolder(root_dir, transform=data_transform)
     dataset_loader = data.DataLoader(
@@ -78,51 +93,13 @@ def get_reference_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
-        transforms.ToTensor()
+        transforms.Lambda(rgb_to_lab),
+        ToTensor()
     ])
     dataset = ReferenceDataset(root_dir, transform=data_transform)
     dataset_loader = data.DataLoader(
         dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, drop_last=True)
     return dataset_loader, dataset.classes
-
-
-def get_evaluation_loader(root_dir, img_size=256, batch_size=32, imagenet_normalize=True,
-                          shuffle=True, num_workers=4, drop_last=False):
-    print("Preparing DataLoader for the evaluation phase...")
-    if (imagenet_normalize):
-        height, width = 299, 299
-        mean = [0.485, 0.456, 0.406]
-        std = [0.229, 0.224, 0.225]
-    else:
-        height, width = img_size, img_size
-        mean = [0.5, 0.5, 0.5]
-        std = [0.5, 0.5, 0.5]
-
-    transform = transforms.Compose([
-        transforms.Resize([img_size, img_size]),
-        transforms.Resize([height, width]),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=mean, std=std)
-    ])
-
-    dataset = DefaultDataset(root_dir, transform=transform)
-    return data.DataLoader(dataset=dataset, batch_size=batch_size, shuffle=shuffle,
-                           num_workers=num_workers, pin_memory=True, drop_last=drop_last)
-
-
-def get_test_loader(root_dir, img_size=256, batch_size=32,
-                    shuffle=True, num_workers=4):
-    print('Preparing DataLoader for the generation phase...')
-    transform = transforms.Compose([
-        transforms.Resize([img_size, img_size]),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5],
-                             std=[0.5, 0.5, 0.5]),
-    ])
-
-    dataset = datasets.ImageFolder(root_dir, transform)
-    return data.DataLoader(dataset=dataset, batch_size=batch_size, shuffle=shuffle,
-                           num_workers=num_workers, pin_memory=True)
 
 
 class InputFetcher:

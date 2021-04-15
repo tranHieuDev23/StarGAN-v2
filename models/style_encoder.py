@@ -9,7 +9,7 @@ class StyleEncoder(nn.Module):
         super().__init__()
         dim_in = 2**14 // img_size
         layers = []
-        layers.append(nn.Conv2d(3, dim_in, 1, 1))
+        layers.append(nn.Conv2d(2, dim_in, 1, 1))
 
         repeat_num = int(np.log2(img_size)) - 2
         for _ in range(repeat_num):
@@ -26,8 +26,9 @@ class StyleEncoder(nn.Module):
         for _ in range(num_domains):
             self.unshared.append(nn.Linear(dim_out, style_dim))
 
-    def forward(self, x, y):
-        h = self.shared(x)
+    def forward(self, lab, y):
+        _, ab = torch.tensor_split(lab, [1, ], dim=1)
+        h = self.shared(ab)
         h = h.view(h.size(0), -1)
         output = []
         for layer in self.unshared:

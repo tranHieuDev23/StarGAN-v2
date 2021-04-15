@@ -10,12 +10,12 @@ class Generator(nn.Module):
         super().__init__()
         dim_in = 2**14 // img_size
         self.img_size = img_size
-        self.from_rgb = nn.Conv2d(3, dim_in, 1, 1, 0)
+        self.from_ab = nn.Conv2d(2, dim_in, 1, 1, 0)
         self._build_encoder_decoder(dim_in, style_dim, max_conv_dim, w_hpf)
-        self.to_rgb = nn.Sequential(
+        self.to_ab = nn.Sequential(
             nn.InstanceNorm2d(dim_in, affine=True),
             nn.LeakyReLU(0.2),
-            nn.Conv2d(dim_in, 3, 1, 1, 0)
+            nn.Conv2d(dim_in, 2, 1, 1, 0)
         )
         if (w_hpf > 0):
             device = torch.device(
@@ -48,19 +48,21 @@ class Generator(nn.Module):
                 0, AdaInResBlock(dim_out, dim_out, style_dim, w_hpf)
             )
 
-    def forward(self, x, s, masks=None):
-        x = self.from_rgb(x)
+    def forward(self, lab, s, masks=None):
+        l, ab = torch.tensor_split(lab, [1, ], dim=1)
+        ab = self.from_ab(ab)
         cache = {}
         for block in self.encode:
-            feature_size = x.size(2)
+            feature_size = ab.size(2)
             if (masks is not None and feature_size in [32, 64, 128, 256]):
-                cache[feature_size] = x
-            x = block(x)
+                cache[feature_size] = ab
+            ab = block(ab)
         for block in self.decode:
-            x = block(x, s)
-            feature_size = x.size(2)
+            ab = block(ab, s)
+            feature_size = ab.size(2)
             if (masks is not None and feature_size in [32, 64, 128, 256]):
                 mask = masks[0] if feature_size in [32] else masks[1]
                 mask = interpolate(mask, size=feature_size, mode="bilinear")
-                x = x + self.hpf(mask * cache[feature_size])
-        return self.to_rgb(x)
+                ab = ab + self.hpf(mask * cache[feature_size])
+        ab = self.to_ab(ab)
+        return torch.cat([l, ab], dim=1)
