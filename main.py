@@ -27,16 +27,17 @@ import click
 @click.option("--print_every", default=StarGanArgs.default_print_every, help="Frequency to log out losses")
 @click.option("--sample_every", default=StarGanArgs.default_sample_every, help="Frequency to sample")
 @click.option("--save_every", default=StarGanArgs.default_save_every, help="Frequency to save models")
-@click.option("--eval_every", default=StarGanArgs.default_eval_every, help="Frequency to evaluate the models")
+@click.option("--video_every", default=StarGanArgs.default_video_every, help="Frequency to generate sample video")
 @click.option("--batch_size", default=StarGanArgs.default_batch_size, help="Batch size")
 @click.option("--num_workers", default=StarGanArgs.default_num_workers, help="Number of worker threads to load the dataset")
 @click.option("--checkpoint_dir", default=StarGanArgs.default_checkpoint_dir, help="Root directory to save the models")
 @click.option("--sample_dir", default=StarGanArgs.default_sample_dir, help="Root directory to save sample images during training")
+@click.option("--plot_dir", default=StarGanArgs.default_plot_dir, help="Root directory to save plot images during training")
 @click.option("--outputs_per_domain", default=StarGanArgs.default_outputs_per_domain, help="Number of images to generate via latent per domain during training sampling")
 def main(img_size, style_dim, latent_dim, num_domains, w_hpf, lambda_sty, lambda_ds,
          lambda_cyc, lambda_reg, lr, f_lr, beta1, beta2, weight_decay, dataset_dir,
-         resume_iter, ds_iter, total_iters, print_every, sample_every, save_every, eval_every,
-         checkpoint_dir, batch_size, num_workers, sample_dir, outputs_per_domain):
+         resume_iter, ds_iter, total_iters, print_every, sample_every, save_every, video_every,
+         checkpoint_dir, batch_size, num_workers, sample_dir, plot_dir, outputs_per_domain):
     args = StarGanArgs()
     args.img_size = img_size
     args.style_dim = style_dim
@@ -59,11 +60,12 @@ def main(img_size, style_dim, latent_dim, num_domains, w_hpf, lambda_sty, lambda
     args.print_every = print_every
     args.sample_every = sample_every
     args.save_every = save_every
-    args.eval_every = eval_every
+    args.video_every = video_every
     args.checkpoint_dir = checkpoint_dir
     args.batch_size = batch_size
     args.num_workers = num_workers
     args.sample_dir = sample_dir
+    args.plot_dir = plot_dir
     args.outputs_per_domain = outputs_per_domain
 
     starGan = StarGANv2Learner(args)

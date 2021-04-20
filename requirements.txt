@@ -2,3 +2,6 @@ munch
 click
 torchsummary
 Pillow
+tqdm
+ffmpeg-python
+matplotlib

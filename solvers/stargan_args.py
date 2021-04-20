@@ -23,12 +23,13 @@ class StarGanArgs:
     default_print_every = 100
     default_sample_every = 100
     default_save_every = 2000
-    default_eval_every = 1000
+    default_video_every = 1000
     default_batch_size = 8
     default_num_workers = 4
     default_outputs_per_domain = 5
     default_checkpoint_dir = "checkpoints"
     default_sample_dir = "samples"
+    default_plot_dir = "plot"
 
     def __init__(self):
         self.img_size = StarGanArgs.default_img_size
@@ -55,9 +56,10 @@ class StarGanArgs:
         self.print_every = StarGanArgs.default_print_every
         self.sample_every = StarGanArgs.default_sample_every
         self.save_every = StarGanArgs.default_save_every
-        self.eval_every = StarGanArgs.default_eval_every
+        self.video_every = StarGanArgs.default_video_every
         self.batch_size = StarGanArgs.default_batch_size
         self.num_workers = StarGanArgs.default_num_workers
         self.checkpoint_dir = StarGanArgs.default_checkpoint_dir
         self.sample_dir = StarGanArgs.default_sample_dir
+        self.plot_dir = StarGanArgs.default_plot_dir
         self.outputs_per_domain = StarGanArgs.default_outputs_per_domain
