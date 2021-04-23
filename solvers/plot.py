@@ -30,7 +30,7 @@ def add_plot_point(args: StarGanArgs, plot_name: str, x: int, y: float):
             ys.append(y)
     fig, ax = plt.subplots()
     ax.plot(xs, ys)
-    ax.set(xlabel='Iteration', ylabel='Loss', title='plot_name')
+    ax.set(xlabel='Iteration', ylabel='Loss', title=plot_name)
     ax.grid()
     fig.savefig(figure_path)
     plt.close()

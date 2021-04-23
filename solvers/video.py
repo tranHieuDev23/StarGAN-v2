@@ -1,7 +1,6 @@
 from typing import List
 
-from torchvision import transforms
-from solvers.rgb_to_lab import _tensor_to_rgb_, lab_denormalize
+from solvers.rgb_to_ycbcr import _tensor_to_rgb_
 from solvers.solver import StarGANv2
 import numpy as np
 import torch

@@ -1,5 +1,6 @@
 import os
 from random import sample
+from solvers.rgb_to_ycbcr import rgb_to_ycbcr
 from solvers.rgb_to_lab import lab_normalize, rgb_to_lab
 import torch
 import torch.utils.data as data
@@ -78,9 +79,8 @@ def get_source_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
-        transforms.Lambda(rgb_to_lab),
-        ToTensor(),
-        lab_normalize()
+        transforms.Lambda(rgb_to_ycbcr),
+        transforms.ToTensor()
     ])
     dataset = datasets.ImageFolder(root_dir, transform=data_transform)
     dataset_loader = data.DataLoader(
@@ -94,9 +94,8 @@ def get_reference_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
-        transforms.Lambda(rgb_to_lab),
-        ToTensor(),
-        lab_normalize()
+        transforms.Lambda(rgb_to_ycbcr),
+        transforms.ToTensor()
     ])
     dataset = ReferenceDataset(root_dir, transform=data_transform)
     dataset_loader = data.DataLoader(
