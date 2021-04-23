@@ -1,7 +1,6 @@
 import os
 from random import sample
 from solvers.rgb_to_ycbcr import rgb_to_ycbcr
-from solvers.rgb_to_lab import lab_normalize, rgb_to_lab
 import torch
 import torch.utils.data as data
 import torch.functional as F
@@ -73,6 +72,13 @@ class ToTensor(object):
         return target
 
 
+def _make_balanced_sampler(samples):
+    class_counts = np.bincount(samples)
+    class_weights = 1. / class_counts
+    weights = class_weights[samples]
+    return data.WeightedRandomSampler(weights, len(weights))
+
+
 def get_source_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
     print("Preparing DataLoader to fetch source images...")
     data_transform = transforms.Compose([
@@ -83,8 +89,10 @@ def get_source_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.ToTensor()
     ])
     dataset = datasets.ImageFolder(root_dir, transform=data_transform)
+    sampler = _make_balanced_sampler(dataset.targets)
     dataset_loader = data.DataLoader(
-        dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, drop_last=True)
+        dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers,
+        pin_memory=True, drop_last=True, sampler=sampler)
     return dataset_loader, dataset.classes
 
 
@@ -98,8 +106,10 @@ def get_reference_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.ToTensor()
     ])
     dataset = ReferenceDataset(root_dir, transform=data_transform)
+    sampler = _make_balanced_sampler(dataset.samples)
     dataset_loader = data.DataLoader(
-        dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers, pin_memory=True, drop_last=True)
+        dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers,
+        pin_memory=True, drop_last=True, sampler=sampler)
     return dataset_loader, dataset.classes
 
 
