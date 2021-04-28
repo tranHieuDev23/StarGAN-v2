@@ -91,7 +91,7 @@ def get_source_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
     dataset = datasets.ImageFolder(root_dir, transform=data_transform)
     sampler = _make_balanced_sampler(dataset.targets)
     dataset_loader = data.DataLoader(
-        dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers,
+        dataset, batch_size=batch_size, num_workers=num_workers,
         pin_memory=True, drop_last=True, sampler=sampler)
     return dataset_loader, dataset.classes
 
@@ -106,9 +106,9 @@ def get_reference_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.ToTensor()
     ])
     dataset = ReferenceDataset(root_dir, transform=data_transform)
-    sampler = _make_balanced_sampler(dataset.samples)
+    sampler = _make_balanced_sampler(dataset.labels)
     dataset_loader = data.DataLoader(
-        dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers,
+        dataset, batch_size=batch_size, num_workers=num_workers,
         pin_memory=True, drop_last=True, sampler=sampler)
     return dataset_loader, dataset.classes
 
