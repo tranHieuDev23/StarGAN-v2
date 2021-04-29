@@ -1,6 +1,6 @@
 import os
 from random import sample
-from solvers.rgb_to_ycbcr import rgb_to_ycbcr
+from solvers.rgb_to_lab import lab_normalize, rgb_to_lab
 import torch
 import torch.utils.data as data
 import torch.functional as F
@@ -63,10 +63,8 @@ class ReferenceDataset(data.Dataset):
 
 
 class ToTensor(object):
-    def __call__(self, image):
-        target = torch.ByteTensor(
-            torch.ByteStorage.from_buffer(image.tobytes()))
-        target = target.view(image.size[1], image.size[0], 3)
+    def __call__(self, image: np.array):
+        target = torch.from_numpy(image)
         # put it from HWC to CHW format
         target = target.to(torch.float).permute((2, 0, 1)).contiguous()
         return target
@@ -85,8 +83,9 @@ def get_source_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
-        transforms.Lambda(rgb_to_ycbcr),
-        transforms.ToTensor()
+        transforms.Lambda(rgb_to_lab),
+        ToTensor(),
+        lab_normalize()
     ])
     dataset = datasets.ImageFolder(root_dir, transform=data_transform)
     sampler = _make_balanced_sampler(dataset.targets)
@@ -102,8 +101,9 @@ def get_reference_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
-        transforms.Lambda(rgb_to_ycbcr),
-        transforms.ToTensor()
+        transforms.Lambda(rgb_to_lab),
+        ToTensor(),
+        lab_normalize()
     ])
     dataset = ReferenceDataset(root_dir, transform=data_transform)
     sampler = _make_balanced_sampler(dataset.labels)
