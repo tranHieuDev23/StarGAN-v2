@@ -17,7 +17,7 @@ class StarGANv2(nn.Module):
         super().__init__()
         self.args = args
         self.generator = Generator(
-            args.img_size, args.style_dim, w_hpf=args.w_hpf)
+            args.img_size, args.style_dim)
         self.mapping_network = MappingNetwork(
             args.latent_dim, args.style_dim, args.num_domains)
         self.style_encoder = StyleEncoder(

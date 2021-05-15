@@ -54,14 +54,12 @@ class AdaIN(nn.Module):
         h = h.view(h.size(0), h.size(1), 1, 1)
         x = self.norm(x)
         gamma, beta = torch.chunk(h, chunks=2, dim=1)
-        return (1 + gamma) * self.norm(x) + beta
+        return (1 + gamma) * x + beta
 
 
 class AdaInResBlock(nn.Module):
-    def __init__(self, dim_in, dim_out, style_dim=64, w_hpf=0,
-                 activation=nn.LeakyReLU(0.2), upsample=False):
+    def __init__(self, dim_in, dim_out, style_dim=64, activation=nn.LeakyReLU(0.2), upsample=False):
         super().__init__()
-        self.w_hpf = w_hpf
         self.activation = activation
         self.upsample = upsample
         self.learned_sc = dim_in != dim_out
@@ -95,19 +93,5 @@ class AdaInResBlock(nn.Module):
 
     def forward(self, x, s):
         out = self._residual(x, s)
-        if self.w_hpf == 0:
-            out = (out + self._shortcut(x)) / math.sqrt(2)
+        out = (out + self._shortcut(x)) / UNIT_VARIANCE
         return out
-
-
-class HighPass(nn.Module):
-    def __init__(self, w_hpf, device):
-        super().__init__()
-        self.filter = torch.tensor([[-1, -1, -1],
-                                    [-1, 8., -1],
-                                    [-1, -1, -1]]).to(device) / w_hpf
-
-    def forward(self, x):
-        filter = self.filter.unsqueeze(0).unsqueeze(
-            1).repeat(x.size(1), 1, 1, 1)
-        return conv2d(x, filter, padding=1, groups=x.size(1))

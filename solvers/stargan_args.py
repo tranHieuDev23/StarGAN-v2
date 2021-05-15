@@ -1,7 +1,7 @@
 class StarGanArgs:
-    default_img_size = 256
-    default_style_dim = 64
-    default_latent_dim = 16
+    default_img_size = 1024
+    default_style_dim = 128
+    default_latent_dim = 32
     default_num_domains = 4
 
     default_w_hpf = 0

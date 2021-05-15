@@ -1,8 +1,7 @@
 import os
 from os import path
 import shutil
-from solvers.rgb_to_lab import _tensor_to_rgb_
-from PIL import Image
+from solvers.rgb_to_ycbcr import _tensor_to_rgb_
 
 from solvers.video import video_latent, video_ref
 from solvers.load_data import InputFetcher

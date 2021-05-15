@@ -1,69 +1,45 @@
 import torch
 import torch.nn as nn
-from torch.nn.functional import interpolate
 import numpy as np
-from models.blocks import AdaInResBlock, HighPass, ResidualBlock
+from models.blocks import AdaInResBlock, ResidualBlock
 
 
 class Generator(nn.Module):
-    def __init__(self, img_size=256, style_dim=64, max_conv_dim=512, w_hpf=1):
+    def __init__(self, img_size=256, style_dim=64, max_conv_dim=512):
         super().__init__()
         dim_in = 2**14 // img_size
         self.img_size = img_size
         self.from_lab = nn.Conv2d(3, dim_in, 1, 1, 0)
-        self._build_encoder_decoder(dim_in, style_dim, max_conv_dim, w_hpf)
+        self._build_encoder_decoder(dim_in, style_dim, max_conv_dim)
         self.to_ab = nn.Sequential(
             nn.InstanceNorm2d(dim_in, affine=True),
             nn.LeakyReLU(0.2),
-            nn.Conv2d(dim_in, 2, 1, 1, 0),
-            # nn.Tanh()
-        )
-        if (w_hpf > 0):
-            device = torch.device(
-                "cuda" if torch.cuda.is_available() else "cpu"
-            )
-            self.hpf = HighPass(w_hpf, device)
+            nn.Conv2d(dim_in, 2, 1, 1, 0))
 
-    def _build_encoder_decoder(self, dim_in, style_dim, max_conv_dim, w_hpf):
+    def _build_encoder_decoder(self, dim_in, style_dim, max_conv_dim):
         self.encode = nn.ModuleList()
-        self.decode = nn.ModuleList()
+        self.decode_ab = nn.ModuleList()
 
         repeat_num = int(np.log2(self.img_size)) - 4
-        if (w_hpf > 0):
-            repeat_num += 1
         for _ in range(repeat_num):
             dim_out = min(dim_in * 2, max_conv_dim)
             self.encode.append(
-                ResidualBlock(dim_in, dim_out, normalize=True, downsample=True)
-            )
-            self.decode.insert(
-                0, AdaInResBlock(dim_out, dim_in, style_dim,
-                                 w_hpf, upsample=True)
-            )
+                ResidualBlock(dim_in, dim_out, normalize=True, downsample=True))
+            self.decode_ab.insert(
+                0, AdaInResBlock(dim_out, dim_in, style_dim, upsample=True))
             dim_in = dim_out
         for _ in range(2):
             self.encode.append(
-                ResidualBlock(dim_out, dim_out, normalize=True)
-            )
-            self.decode.insert(
-                0, AdaInResBlock(dim_out, dim_out, style_dim, w_hpf)
-            )
+                ResidualBlock(dim_out, dim_out, normalize=True))
+            self.decode_ab.insert(
+                0, AdaInResBlock(dim_out, dim_out, style_dim))
 
-    def forward(self, lab, s, masks=None):
-        l, _ = torch.tensor_split(lab, [1, ], dim=1)
+    def forward(self, lab, s):
+        l = lab[:, 0:1]
         x = self.from_lab(lab)
-        cache = {}
         for block in self.encode:
-            feature_size = x.size(2)
-            if (masks is not None and feature_size in [32, 64, 128, 256]):
-                cache[feature_size] = x
             x = block(x)
-        for block in self.decode:
+        for block in self.decode_ab:
             x = block(x, s)
-            feature_size = x.size(2)
-            if (masks is not None and feature_size in [32, 64, 128, 256]):
-                mask = masks[0] if feature_size in [32] else masks[1]
-                mask = interpolate(mask, size=feature_size, mode="bilinear")
-                x = x + self.hpf(mask * cache[feature_size])
-        x = self.to_ab(x)
-        return torch.cat([l, x], dim=1)
+        ab = self.to_ab(x)
+        return torch.cat([l, ab], dim=1)
