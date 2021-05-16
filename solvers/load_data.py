@@ -1,6 +1,8 @@
 import os
 from random import sample
 
+from torchvision.transforms.transforms import RandomVerticalFlip
+
 from solvers.rgb_to_ycbcr import rgb_to_ycbcr
 import torch
 import torch.utils.data as data
@@ -86,6 +88,7 @@ def get_source_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
+        transforms.RandomVerticalFlip(),
         transforms.Lambda(rgb_to_ycbcr),
         transforms.ToTensor()
     ])
@@ -105,6 +108,7 @@ def get_reference_loader(root_dir, img_size=256, batch_size=8, num_workers=4):
         transforms.RandomResizedCrop(
             img_size, scale=[0.8, 1.0], ratio=[0.9, 1.1]),
         transforms.RandomHorizontalFlip(),
+        transforms.RandomVerticalFlip(),
         transforms.Lambda(rgb_to_ycbcr),
         transforms.ToTensor(),
     ])
